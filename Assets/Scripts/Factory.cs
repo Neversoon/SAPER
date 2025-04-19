@@ -7,5 +7,5 @@ public abstract class Factory
     {
         cellView = Resources.Load("Prefabs/Cell", typeof(GameObject)) as GameObject;
     }
-    public abstract Cell Create(Vector2 position, GameObject container);
+    public abstract Cell Create(Vector2 position, GameObject container, Vector2Int indexPosition);
 }

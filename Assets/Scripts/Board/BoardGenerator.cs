@@ -41,7 +41,7 @@ public class BoardGenerator
 
             Vector2 createPosition = new Vector2(randomPoint.x - offsetX, randomPoint.y - offsetY);
 
-            Cell cell = factory.Create(createPosition, container);
+            Cell cell = factory.Create(createPosition, container, new Vector2Int(randomPoint.y, randomPoint.x));
 
             cells[randomY, randomX] = cell;
 
@@ -56,7 +56,7 @@ public class BoardGenerator
 
                 Vector2 createPosition = new Vector2(points[y][x].x - offsetX, points[y][x].y - offsetY);
 
-                Cell cell = factory.Create(createPosition, container);
+                Cell cell = factory.Create(createPosition, container, new Vector2Int(y, x));
 
                 cells[points[y][x].y, points[y][x].x] = cell;
             }
