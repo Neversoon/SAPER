@@ -37,7 +37,7 @@ public class BoardGenerator
 
             Vector2Int randomPoint = points[randomY][randomX];
 
-            Factory factory = new CellFactory<BombCell>();
+            CellFactory<BombCell> factory = new CellFactory<BombCell>();
 
             Vector2 createPosition = new Vector2(randomPoint.x - offsetX, randomPoint.y - offsetY);
 
@@ -52,7 +52,7 @@ public class BoardGenerator
         {
             for (int x = 0; x < points[y].Length; x++)
             {
-                Factory factory = new CellFactory<EmptyCell>();
+                CellFactory<EmptyCell> factory = new CellFactory<EmptyCell>();
 
                 Vector2 createPosition = new Vector2(points[y][x].x - offsetX, points[y][x].y - offsetY);
 

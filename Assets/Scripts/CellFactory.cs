@@ -1,8 +1,13 @@
 using UnityEngine;
 
-public class CellFactory<T> : Factory where T : Cell
+public class CellFactory<T> where T : Cell
 {
-    public override Cell Create(Vector2 position, GameObject container, Vector2Int cellIndex)
+    protected GameObject cellView;
+    public CellFactory()
+    {
+        cellView = Resources.Load("Prefabs/Cell", typeof(GameObject)) as GameObject;
+    }
+    public Cell Create(Vector2 position, GameObject container, Vector2Int cellIndex)
     {
         GameObject cellDefault = Object.Instantiate(cellView.gameObject, position, Quaternion.identity, container.transform);
 
