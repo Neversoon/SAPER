@@ -1,12 +1,12 @@
+
 public class EmptyCell : Cell
 {
-    void Awake()
+    public EmptyCell(CellView cellView, ICellStateChanger cellStateChanger) : base(cellView, cellStateChanger)
     {
-        cellView = GetComponent<CellView>();
-        cellData.id = 0;
-        cellView.Setflag();
     }
+
     public override void Tap()
     {
+        
     }
 }

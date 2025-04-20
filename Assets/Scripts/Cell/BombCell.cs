@@ -1,16 +1,16 @@
 using UnityEngine.EventSystems;
 
-public class BombCell : Cell
+public class BombCell : ClosedCell
 {
-    void Awake()
+    public BombCell(CellView cellView, ICellStateChanger cellStateChanger) : base(cellView, cellStateChanger)
     {
-        cellView = GetComponent<CellView>();
-        cellData.id = 1;
-        cellView.SetBomb();
     }
 
     public override void Tap()
     {
+        if (setFlag)
+        {
+            return;
+        }
     }
-
 }

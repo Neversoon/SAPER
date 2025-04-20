@@ -1,8 +1,19 @@
 using UnityEngine;
 
-public abstract class Cell : MonoBehaviour
+public abstract class Cell
 {
-    public CellData cellData { get; set; } = new CellData();
-    protected CellView cellView;
+    CellView cellView;
+    protected bool setFlag = false;
+    ICellStateChanger cellStateChanger;
+
+    public Cell(CellView cellView, ICellStateChanger cellStateChanger)
+    {
+        this.cellView = cellView;
+        this.cellStateChanger = cellStateChanger;
+    }
     public abstract void Tap();
+    public virtual void SetFlag()
+    {
+        setFlag = !setFlag;
+    }
 }

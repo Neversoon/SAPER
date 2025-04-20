@@ -6,101 +6,55 @@ public class BoardGenerator
 {
     GameRules gameRules = new GameRules();
 
-    public Cell[,] GenerateBoard(BoardData boardData)
+    public CellObject[][] GenerateBoard(BoardData boardData)
     {
-        Cell[,] cells = new Cell[boardData.sizeY, boardData.sizeX];
+        CellObject[][] cells = new CellObject[boardData.sizeY][];
+
+        for (int y = 0; y < boardData.sizeY; y++)
+        {
+            cells[y] = new CellObject[boardData.sizeX];
+        }
 
         GameObject container = new GameObject("Board");
 
         float offsetY = boardData.sizeY / 2;
         float offsetX = boardData.sizeX / 2;
 
-        Vector2Int[][] points = new Vector2Int[boardData.sizeY][];
-
-
+        List<Vector2Int> availablePoints = new List<Vector2Int>();
 
         for (int y = 0; y < boardData.sizeY; y++)
         {
-            points[y] = new Vector2Int[boardData.sizeX];
-
             for (int x = 0; x < boardData.sizeX; x++)
             {
-                points[y][x] = new Vector2Int(x, y);
+                availablePoints.Add(new Vector2Int(x, y));
             }
         }
 
         for (int i = 0; i < gameRules.badCellCount; i++)
         {
-            int randomY = Random.Range(0, points.Length);
+            int index = Random.Range(0, availablePoints.Count);
+            Vector2Int point = availablePoints[index];
+            availablePoints.RemoveAt(index);
 
-            int randomX = Random.Range(0, points[randomY].Length);
+            var factory = new CellFactory<BombCell>();
 
-            Vector2Int randomPoint = points[randomY][randomX];
+            Vector2 createPosition = new Vector2(point.x - offsetX, point.y - offsetY);
+            CellObject cell = factory.Create(createPosition, container, new Vector2Int(point.x, point.y));
 
-            CellFactory<BombCell> factory = new CellFactory<BombCell>();
-
-            Vector2 createPosition = new Vector2(randomPoint.x - offsetX, randomPoint.y - offsetY);
-
-            Cell cell = factory.Create(createPosition, container, new Vector2Int(randomPoint.y, randomPoint.x));
-
-            cells[randomY, randomX] = cell;
-
-            RemovePoint(ref points, randomY, randomX);
+            cells[point.y][point.x] = cell;
         }
 
-        for (int y = 0; y < points.Length; y++)
+        foreach (var point in availablePoints)
         {
-            for (int x = 0; x < points[y].Length; x++)
-            {
-                CellFactory<EmptyCell> factory = new CellFactory<EmptyCell>();
+            var factory = new CellFactory<EmptyClosedCell>();
 
-                Vector2 createPosition = new Vector2(points[y][x].x - offsetX, points[y][x].y - offsetY);
+            Vector2 createPosition = new Vector2(point.x - offsetX, point.y - offsetY);
+            CellObject cell = factory.Create(createPosition, container, new Vector2Int(point.x, point.y));
 
-                Cell cell = factory.Create(createPosition, container, new Vector2Int(y, x));
-
-                cells[points[y][x].y, points[y][x].x] = cell;
-            }
+            cells[point.y][point.x] = cell;
         }
 
         return cells;
-    }
-
-    void RemovePoint(ref Vector2Int[][] points, int indexY, int indexX)
-    {
-        int len = points[indexY].Length;
-
-        if (len <= 1)
-        {
-            int yLen = points.Length;
-            Vector2Int[][] newPoints = new Vector2Int[yLen - 1][];
-
-            int newIndexY = 0;
-            for (int y = 0; y < yLen; y++)
-            {
-                if (y != indexY)
-                {
-                    newPoints[newIndexY] = points[y];
-                    newIndexY++;
-                }
-            }
-
-            points = newPoints;
-            return;
-        }
-
-        Vector2Int[] newRow = new Vector2Int[len - 1];
-        int newIndex = 0;
-
-        for (int i = 0; i < len; i++)
-        {
-            if (i != indexX)
-            {
-                newRow[newIndex] = points[indexY][i];
-                newIndex++;
-            }
-        }
-
-        points[indexY] = newRow;
     }
 
 }
