@@ -6,7 +6,7 @@ public class CellStateChanger : MonoBehaviour, ICellStateChanger
 {
     [SerializeField] CellView cellView;
     List<Cell> cellStates = new List<Cell>();
-    public Cell currentState { get; private set; }
+    public Cell currentState;
 
     void Awake()
     {

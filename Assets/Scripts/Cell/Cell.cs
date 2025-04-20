@@ -2,9 +2,10 @@ using UnityEngine;
 
 public abstract class Cell
 {
-    CellView cellView;
+    public CellView cellView { get; private set; } 
     protected bool setFlag = false;
-    ICellStateChanger cellStateChanger;
+    protected ICellStateChanger cellStateChanger;
+    public CellData cellData { get; private set; } = new CellData();
 
     public Cell(CellView cellView, ICellStateChanger cellStateChanger)
     {
@@ -15,5 +16,6 @@ public abstract class Cell
     public virtual void SetFlag()
     {
         setFlag = !setFlag;
+        cellView.ChangeFlagView(setFlag);
     }
 }

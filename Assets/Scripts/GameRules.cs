@@ -1,4 +1,4 @@
 public class GameRules
 {
-    public int badCellCount = 99;
+    public int badCellCount = 10;
 }

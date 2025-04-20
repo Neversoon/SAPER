@@ -4,6 +4,7 @@ public class BombCell : ClosedCell
 {
     public BombCell(CellView cellView, ICellStateChanger cellStateChanger) : base(cellView, cellStateChanger)
     {
+        cellData.id = 2;
     }
 
     public override void Tap()
@@ -12,5 +13,12 @@ public class BombCell : ClosedCell
         {
             return;
         }
+        cellView.SetEmptyCell();
+        cellView.SetBomb();
+        cellView.SetRedCell();
+    }
+    public override void SetFlag()
+    {
+        base.SetFlag();
     }
 }

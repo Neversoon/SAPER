@@ -56,6 +56,6 @@ public class CellView : MonoBehaviour
     {
         bombCount.gameObject.SetActive(true);
 
-        bombCount.text = $"{cellIndex.y} {cellIndex.x}";
+        bombCount.text = $"{cellIndex.x} {cellIndex.y}";
     }
 }

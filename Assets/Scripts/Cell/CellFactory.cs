@@ -13,13 +13,10 @@ public class CellFactory<T> where T : ClosedCell
         CellObject cellDefault = Object.Instantiate(cellObject, position, Quaternion.identity, container.transform);
 
         cellDefault.name = typeof(T).Name;
-
-        cellDefault.cellData.cellIndex = cellIndex;
-        
-        cellDefault.cellStateChanger  = cellDefault.AddComponent<CellStateChanger>();
         
         cellDefault.cellStateChanger.ChangeState<T>();
 
+        cellDefault.cellStateChanger.currentState.cellData.cellIndex = cellIndex;
         return cellDefault;
     }
 }

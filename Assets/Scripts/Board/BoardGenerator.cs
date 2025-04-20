@@ -26,7 +26,7 @@ public class BoardGenerator
         {
             for (int x = 0; x < boardData.sizeX; x++)
             {
-                availablePoints.Add(new Vector2Int(x, y));
+                availablePoints.Add(new Vector2Int(y, x));
             }
         }
 
@@ -39,7 +39,7 @@ public class BoardGenerator
             var factory = new CellFactory<BombCell>();
 
             Vector2 createPosition = new Vector2(point.x - offsetX, point.y - offsetY);
-            CellObject cell = factory.Create(createPosition, container, new Vector2Int(point.x, point.y));
+            CellObject cell = factory.Create(createPosition, container, new Vector2Int(point.y, point.x));
 
             cells[point.y][point.x] = cell;
         }
@@ -49,7 +49,7 @@ public class BoardGenerator
             var factory = new CellFactory<EmptyClosedCell>();
 
             Vector2 createPosition = new Vector2(point.x - offsetX, point.y - offsetY);
-            CellObject cell = factory.Create(createPosition, container, new Vector2Int(point.x, point.y));
+            CellObject cell = factory.Create(createPosition, container, new Vector2Int(point.y, point.x));
 
             cells[point.y][point.x] = cell;
         }

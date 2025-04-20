@@ -2,6 +2,7 @@ public class EmptyClosedCell : ClosedCell
 {
     public EmptyClosedCell(CellView cellView, ICellStateChanger cellStateChanger) : base(cellView, cellStateChanger)
     {
+        cellData.id = 1;
     }
 
     public override void Tap()
@@ -10,5 +11,12 @@ public class EmptyClosedCell : ClosedCell
         {
             return;
         }
+
+        cellView.SetEmptyCell();
+        cellStateChanger.ChangeState<EmptyCell>();
+    }
+    public override void SetFlag()
+    {
+        base.SetFlag();
     }
 }
