@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class BoardGenerator
 {
-    GameRules gameRules = new GameRules();
+    GameRules gameRules;
 
-    public CellObject[][] GenerateBoard(BoardData boardData)
+    public BoardGenerator(GameRules gameRules)
+    {
+        this.gameRules = gameRules;
+    }
+
+    public BoardController GenerateBoard(BoardData boardData)
     {
         CellObject[][] cells = new CellObject[boardData.sizeY][];
 
@@ -17,8 +22,8 @@ public class BoardGenerator
 
         GameObject container = new GameObject("Board");
 
-        float offsetY = boardData.sizeY / 2;
-        float offsetX = boardData.sizeX / 2;
+        float offsetY = boardData.sizeY / 2 + 0.5f;
+        float offsetX = boardData.sizeX / 2 - 0.5f;
 
         List<Vector2Int> availablePoints = new List<Vector2Int>();
 
@@ -54,7 +59,9 @@ public class BoardGenerator
             cells[point.y][point.x] = cell;
         }
 
-        return cells;
+        BoardController boardController = new BoardController(cells, container);
+
+        return boardController;
     }
 
 }

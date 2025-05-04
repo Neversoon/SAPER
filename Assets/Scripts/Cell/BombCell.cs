@@ -13,9 +13,12 @@ public class BombCell : ClosedCell
         {
             return;
         }
+        
         cellView.SetEmptyCell();
         cellView.SetBomb();
         cellView.SetRedCell();
+
+        GameEvents.Instance.lostGame?.Invoke();
     }
     public override void SetFlag()
     {

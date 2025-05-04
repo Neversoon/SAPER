@@ -29,7 +29,7 @@ public class CellView : MonoBehaviour
     }
     public void Disableflag()
     {
-        bombObject.gameObject.SetActive(false);
+        flagObject.gameObject.SetActive(false);
     }
 
     public void ChangeFlagView(bool setFlag)
@@ -50,12 +50,5 @@ public class CellView : MonoBehaviour
         bombCount.gameObject.SetActive(true);
 
         bombCount.text = $"{count}";
-    }
-
-    internal void SetText(Vector2Int cellIndex)
-    {
-        bombCount.gameObject.SetActive(true);
-
-        bombCount.text = $"{cellIndex.x} {cellIndex.y}";
     }
 }

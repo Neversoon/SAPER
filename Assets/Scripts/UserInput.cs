@@ -3,54 +3,26 @@ using UnityEngine.InputSystem;
 
 public class UserInput
 {
-    Vector2 screenPosition;
-    public UserInput(InputActionAsset inputActions, CellObject[][] cells, Camera mainCamera)
+    public Vector2 screenPosition { get; private set; }
+    public InputAction openCell { get; private set; }
+    public InputAction setFlag { get; private set; }
+    InputAction screenPositionAction;
+
+    public UserInput(InputActionAsset inputActions)
     {
-        CellSelection cellSelection = new CellSelection(cells);
+        openCell = inputActions.FindAction("OpenCell");
+        screenPositionAction = inputActions.FindAction("ScreenPosition");
+        setFlag = inputActions.FindAction("SetFlag");
 
-        InputAction openCell = inputActions.FindAction("OpenCell");
-
-        InputAction screenPositionAction = inputActions.FindAction("ScreenPosition");
-
-        InputAction setFlag = inputActions.FindAction("SetFlag");
-
-
-        screenPositionAction.performed += (cfx) =>
+        screenPositionAction.performed += (ctx) =>
         {
-            screenPosition = cfx.ReadValue<Vector2>();
-        };
-
-        openCell.performed += (cfx) =>
-        {
-            Vector2 worldPosition = mainCamera.ScreenToWorldPoint(screenPosition);
-
-            CellObject cell = cellSelection.FindSelection(worldPosition);
-
-            if (cell != null)
-            {
-                cell.cellStateChanger.currentState.Tap();
-
-                BoardScanner boardScanner = new BoardScanner();
-
-                boardScanner.Scan(cell, ref cells);
-            }
-        };
-
-
-        setFlag.performed += (cfx) =>
-        {
-            Vector2 worldPosition = mainCamera.ScreenToWorldPoint(screenPosition);
-
-            CellObject cell = cellSelection.FindSelection(worldPosition);
-
-            if (cell != null)
-            {
-                cell.cellStateChanger.currentState.SetFlag();
-            }
+            screenPosition = ctx.ReadValue<Vector2>();
         };
 
         screenPositionAction.Enable();
         openCell.Enable();
         setFlag.Enable();
     }
+
+
 }
