@@ -4,14 +4,14 @@ using UnityEngine.InputSystem;
 public class GameStarter
 {
     InputActionAsset inputActions;
-    Camera mainCamera;
+    CameraController cameraController;
     UserAction userAction;
     BoardController boardController;
 
-    public GameStarter(InputActionAsset inputActions, Camera mainCamera)
+    public GameStarter(InputActionAsset inputActions, CameraController cameraController)
     {
         this.inputActions = inputActions;
-        this.mainCamera = mainCamera;
+        this.cameraController = cameraController;
     }
 
     public void StartGame(GameModeData gameData)
@@ -24,7 +24,7 @@ public class GameStarter
         BoardScanner boardScanner = new BoardScanner(boardController.cells, gameData);
         CellSelection cellSelection = new CellSelection(boardController.cells);
 
-        userAction = new UserAction(userInput, boardScanner, cellSelection, mainCamera);
+        userAction = new UserAction(userInput, boardScanner, cellSelection, cameraController);
 
         GameEvents.Instance.startGame?.Invoke();
     }

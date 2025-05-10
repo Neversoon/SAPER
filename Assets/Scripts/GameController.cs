@@ -4,14 +4,13 @@ using UnityEngine.InputSystem;
 public class GameController : MonoBehaviour
 {
     [SerializeField] InputActionAsset inputActions;
-    Camera cameraMain;
+    [SerializeField] CameraController cameraController;
     GameModesController gameModesController = new GameModesController();
     GameStarter gameStarter;
 
     void Awake()
     {
-        cameraMain = Camera.main;
-        gameStarter = new GameStarter(inputActions, cameraMain);
+        gameStarter = new GameStarter(inputActions, cameraController);
         Play();
     }
     public void Play()

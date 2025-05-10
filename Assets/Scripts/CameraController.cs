@@ -6,12 +6,15 @@ public class CameraController : MonoBehaviour
     float zoomMax = 12.0f;
     float zoomMin = 3.0f;
     [SerializeField] Camera mainCamera;
+    
+    public Camera getMainCamera => mainCamera;
+    
     public void SetBounds(BoardData boardData)
     {
         float newSize = Mathf.Max(boardData.sizeX, boardData.sizeY);
 
         zoomMax = newSize * 2;
-        zoomMin = newSize * 2;
+        zoomMin = newSize / 2;
 
         ScreenOrientation screenOrientation = Screen.orientation;
 
@@ -30,9 +33,9 @@ public class CameraController : MonoBehaviour
 
     public void Zoom(float value)
     {
-        float newValue = Math.Clamp(value, zoomMin, zoomMax);
+        mainCamera.orthographicSize += value * Time.deltaTime;
 
-        mainCamera.orthographicSize = newValue;
+        mainCamera.orthographicSize = Math.Clamp(mainCamera.orthographicSize, zoomMin, zoomMax);
     }
     
 }
