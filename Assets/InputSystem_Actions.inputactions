@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "f5036f94-fe90-4413-bec5-f81cd48054b2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -70,7 +79,7 @@
                     "id": "67dab65f-6d0d-412d-a778-2e1af8622460",
                     "path": "<Touchscreen>/Press",
                     "interactions": "Hold(duration=1.2,pressPoint=1)",
-                    "processors": "",
+                    "processors": "AxisDeadzone",
                     "groups": "",
                     "action": "SetFlag",
                     "isComposite": false,
@@ -80,8 +89,8 @@
                     "name": "",
                     "id": "bc32b6cb-9d58-4d7c-a7cf-ca59b369bf0e",
                     "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
+                    "interactions": "Press",
+                    "processors": "AxisDeadzone",
                     "groups": "",
                     "action": "SetFlag",
                     "isComposite": false,
@@ -117,6 +126,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b253f78e-ae0a-4294-b554-064211edf36f",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "da41b780-858f-43af-8c3f-c7a4623bac13",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
