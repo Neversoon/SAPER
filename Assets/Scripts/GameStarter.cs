@@ -16,6 +16,8 @@ public class GameStarter
 
     public void StartGame(GameModeData gameData)
     {
+        GameEvents.Instance.userFlagCountChanged?.Invoke(gameData.gameRules.badCellCount);
+
         BoardGenerator boardGenerator = new BoardGenerator(gameData.gameRules);
 
         boardController = boardGenerator.GenerateBoard(gameData.boardData);

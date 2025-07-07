@@ -4,7 +4,9 @@ public class NumericCell : Cell
     {
         cellData.id = 3;
     }
-
+    public override void SetFlag()
+    {
+    }
     public override void Tap()
     {
 

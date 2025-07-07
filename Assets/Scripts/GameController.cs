@@ -16,9 +16,28 @@ public class GameController : MonoBehaviour
     public void Play()
     {
         gameStarter.StartGame(gameModesController.GetCurrentGameData());
+        cameraController.SetBounds(gameModesController.GetCurrentGameData().boardData);
     }
     public void Restart()
     {
         gameStarter.RestartGame(gameModesController.GetCurrentGameData());
+        cameraController.SetBounds(gameModesController.GetCurrentGameData().boardData);
+    }
+    public void ChangeGameMode(GameModeData gameModeData)
+    {
+        gameModesController.ChangeCurrentData(gameModeData);
+        Restart();
+    }
+    public void SelectEasyMode()
+    {
+        ChangeGameMode(GameModes.easyMode);
+    }
+    public void SelectMediumMode()
+    {
+        ChangeGameMode(GameModes.mediumMode);
+    }
+    public void SelectHardMode()
+    {
+        ChangeGameMode(GameModes.hardMode);
     }
 }

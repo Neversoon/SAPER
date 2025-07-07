@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     public Camera getMainCamera => mainCamera;
 
-    private float zoomMax = 12.0f;
+    private float zoomMax = 9.0f;
     private float zoomMin = 3.0f;
 
     private Vector2 dragScreenOrigin;
@@ -17,8 +17,8 @@ public class CameraController : MonoBehaviour
 
     public void SetBounds(BoardData boardData)
     {
-        float newSize = Mathf.Max(boardData.sizeX, boardData.sizeY);
-        zoomMax = newSize * 2;
+        float newSize = Mathf.Min(boardData.sizeX, boardData.sizeY);
+        zoomMax = newSize * 1.5f;
         zoomMin = newSize / 2;
 
         if (Screen.orientation is ScreenOrientation.LandscapeLeft or ScreenOrientation.LandscapeRight)
@@ -37,7 +37,6 @@ public class CameraController : MonoBehaviour
     public void Zoom(float value)
     {
         mainCamera.orthographicSize += value * Time.deltaTime;
-        mainCamera.orthographicSize = Mathf.Clamp(mainCamera.orthographicSize, zoomMin, zoomMax);
     }
 
     public void StartDrag(InputAction.CallbackContext ctx)
@@ -53,6 +52,8 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
+        mainCamera.orthographicSize = Mathf.Clamp(mainCamera.orthographicSize, zoomMin, zoomMax);
+
         if (!isDragging) return;
 
         Vector2 currentScreenPos = userInput.screenPosition;
@@ -67,6 +68,12 @@ public class CameraController : MonoBehaviour
         delta.z = 0;
 
         transform.position += delta;
+
+        transform.position = new Vector3(
+            Mathf.Clamp(transform.position.x, -zoomMax / mainCamera.orthographicSize, zoomMax / mainCamera.orthographicSize),
+            Mathf.Clamp(transform.position.y, -zoomMax / mainCamera.orthographicSize, zoomMax / mainCamera.orthographicSize),
+            transform.position.z
+        );
 
         dragScreenOrigin = currentScreenPos;
     }

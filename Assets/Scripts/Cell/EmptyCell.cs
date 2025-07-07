@@ -5,7 +5,9 @@ public class EmptyCell : Cell
     {
         cellData.id = 0;
     }
-
+    public override void SetFlag()
+    {
+    }
     public override void Tap()
     {
         

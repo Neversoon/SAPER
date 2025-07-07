@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class UserAction : System.IDisposable
 {
+    bool userOpenFirstCell = false;
     [SerializeField] float deadZone = 0.6f;
     UserInput userInput;
     BoardScanner boardScanner;
@@ -116,6 +117,12 @@ public class UserAction : System.IDisposable
 
         boardScanner.Scan(cell);
 
+        if (!userOpenFirstCell)
+        {
+            userOpenFirstCell = true;
+            GameEvents.Instance.userOpenFirstCell?.Invoke();
+        }
+
         if (!boardScanner.HaveClosedEmptyCell())
         {
             GameEvents.Instance.winGame?.Invoke();
@@ -137,7 +144,15 @@ public class UserAction : System.IDisposable
         if (cell == null)
             return;
 
+        if (!userOpenFirstCell)
+        {
+            userOpenFirstCell = true;
+            GameEvents.Instance.userOpenFirstCell?.Invoke();
+        }
+
         cell.cellStateChanger.currentState.SetFlag();
+
+        GameEvents.Instance.userFlagCountChanged?.Invoke(boardScanner.gameData.gameRules.badCellCount - boardScanner.FlagCount());
     }
 
     public void Dispose()

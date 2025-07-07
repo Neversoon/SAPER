@@ -7,6 +7,8 @@ public class GameEvents : MonoBehaviour
     public UnityAction winGame;
     public UnityAction startGame;
     public UnityAction restartGame;
+    public UnityAction userOpenFirstCell;
+    public UnityAction<int> userFlagCountChanged;
 
     private static GameEvents _instance;
     public static GameEvents Instance
@@ -15,23 +17,17 @@ public class GameEvents : MonoBehaviour
         {
             if (_instance == null)
             {
-                GameObject gameEvents = new GameObject("GameEvents");
-                return gameEvents.AddComponent<GameEvents>();
+                _instance = FindAnyObjectByType<GameEvents>();
+
+                if (_instance == null)
+                {
+                    GameObject obj = new GameObject("GameEvents");
+                    _instance = obj.AddComponent<GameEvents>();
+                    DontDestroyOnLoad(obj);
+                }
             }
+
             return _instance;
         }
     }
-
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
-
 }

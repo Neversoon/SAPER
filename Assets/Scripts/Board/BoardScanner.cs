@@ -3,7 +3,7 @@ using UnityEngine;
 public class BoardScanner
 {
     CellObject[][] cells;
-    GameModeData gameData;
+    public GameModeData gameData { get; private set; }
     public BoardScanner(CellObject[][] cells, GameModeData gameData)
     {
         this.cells = cells;
@@ -33,7 +33,7 @@ public class BoardScanner
 
         int minX = Mathf.Clamp(index.y - 1, 0, gameData.boardData.sizeX - 1);
         int maxX = Mathf.Clamp(index.y + 1, 0, gameData.boardData.sizeX - 1);
-        
+
         int bombCount = 0;
 
         for (int y = minY; y <= maxY; y++)
@@ -74,7 +74,7 @@ public class BoardScanner
         for (int y = minY; y <= maxY; y++)
         {
             for (int x = minX; x <= maxX; x++)
-            {   
+            {
                 if (x == index.y && y == index.x)
                 {
                     continue;
@@ -104,5 +104,20 @@ public class BoardScanner
         }
 
         return false;
+    }
+    public int FlagCount()
+    {
+        int flagCount = 0;
+        for (int y = 0; y < cells.Length; y++)
+        {
+            for (int x = 0; x < cells[y].Length; x++)
+            {
+                if (cells[y][x].cellStateChanger.currentState.setFlag)
+                {
+                    flagCount++;
+                }
+            }
+        }
+        return flagCount;
     }
 }
