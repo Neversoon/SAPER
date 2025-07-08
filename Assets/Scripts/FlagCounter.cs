@@ -3,19 +3,18 @@ using UnityEngine;
 public class FlagCounter : MonoBehaviour
 {
     [SerializeField] FlagCountUI flagCountUI;
+    delegate void FlagCountChanged(int flagCount);
 
-    private void OnEnable()
+    void Awake()
     {
-        GameEvents.Instance.userFlagCountChanged += UpdateFlagCount;
+        EventBus.Subscribe<GameEvents.FlagCountChanged>(UpdateFlagCount);
     }
-
-    private void OnDisable()
+    private void UpdateFlagCount(GameEvents.FlagCountChanged flagCountEvent)
     {
-        GameEvents.Instance.userFlagCountChanged -= UpdateFlagCount;
+        flagCountUI.UpdateFlagCountText(flagCountEvent.NewCount);
     }
-
-    private void UpdateFlagCount(int flagCount)
+    void OnDestroy()
     {
-        flagCountUI.UpdateFlagCountText(flagCount);
+        EventBus.Unsubscribe<GameEvents.FlagCountChanged>(UpdateFlagCount);
     }
 }

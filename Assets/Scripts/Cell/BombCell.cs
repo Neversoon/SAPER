@@ -17,8 +17,8 @@ public class BombCell : ClosedCell
         cellView.SetEmptyCell();
         cellView.SetBomb();
         cellView.SetRedCell();
-
-        GameEvents.Instance.lostGame?.Invoke();
+        
+        EventBus.Publish(new GameEvents.Lost());
     }
     public override void SetFlag()
     {

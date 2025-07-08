@@ -16,7 +16,7 @@ public class GameStarter
 
     public void StartGame(GameModeData gameData)
     {
-        GameEvents.Instance.userFlagCountChanged?.Invoke(gameData.gameRules.badCellCount);
+        EventBus.Publish(new GameEvents.FlagCountChanged(gameData.gameRules.badCellCount));
 
         BoardGenerator boardGenerator = new BoardGenerator(gameData.gameRules);
 
@@ -28,12 +28,12 @@ public class GameStarter
 
         userAction = new UserAction(userInput, boardScanner, cellSelection, cameraController);
 
-        GameEvents.Instance.startGame?.Invoke();
+        EventBus.Publish(new GameEvents.Started());
     }
     public void RestartGame(GameModeData gameData)
     {
-        GameEvents.Instance.restartGame?.Invoke();
-        
+        EventBus.Publish(new GameEvents.Restart());
+
         if (userAction != null)
         {
             userAction.Dispose();
@@ -44,4 +44,12 @@ public class GameStarter
         StartGame(gameData);
     }
 
+    public void PauseGame()
+    {
+        EventBus.Publish(new GameEvents.Pause());
+    }
+    public void ResumeGame()
+    {
+        EventBus.Publish(new GameEvents.Resume());
+    }
 }

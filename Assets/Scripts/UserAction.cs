@@ -120,12 +120,12 @@ public class UserAction : System.IDisposable
         if (!userOpenFirstCell)
         {
             userOpenFirstCell = true;
-            GameEvents.Instance.userOpenFirstCell?.Invoke();
+            EventBus.Publish(new GameEvents.OpenFirstCell());
         }
 
         if (!boardScanner.HaveClosedEmptyCell())
         {
-            GameEvents.Instance.winGame?.Invoke();
+            EventBus.Publish(new GameEvents.Win());
         }
     }
 
@@ -147,12 +147,12 @@ public class UserAction : System.IDisposable
         if (!userOpenFirstCell)
         {
             userOpenFirstCell = true;
-            GameEvents.Instance.userOpenFirstCell?.Invoke();
+            EventBus.Publish(new GameEvents.OpenFirstCell());
         }
 
         cell.cellStateChanger.currentState.SetFlag();
 
-        GameEvents.Instance.userFlagCountChanged?.Invoke(boardScanner.gameData.gameRules.badCellCount - boardScanner.FlagCount());
+        EventBus.Publish(new GameEvents.FlagCountChanged(boardScanner.gameData.gameRules.badCellCount - boardScanner.FlagCount()));
     }
 
     public void Dispose()

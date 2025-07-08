@@ -1,8 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PanelViewController : MonoBehaviour
 {
+    [SerializeField] Image currentImage;
+    [SerializeField] Sprite imageUP;
+    [SerializeField] Sprite imageDown;
     [SerializeField] RectTransform panel;
     [SerializeField] RectTransform containerRoot;
     [SerializeField] float openTime = 0.5f;
@@ -30,6 +34,8 @@ public class PanelViewController : MonoBehaviour
                 yield return null;
             }
             containerRoot.anchoredPosition = Vector2.Lerp(startPosition, new Vector2(startPosition.x, -height), 1.0f);
+
+            currentImage.sprite = imageUP;
             isPanelOpen = false;
         }
         else
@@ -41,6 +47,8 @@ public class PanelViewController : MonoBehaviour
                 yield return null;
             }
             containerRoot.anchoredPosition = Vector2.Lerp(startPosition, Vector2.zero, 1.0f);
+
+            currentImage.sprite = imageDown;
             isPanelOpen = true;
         }
         yield return null;

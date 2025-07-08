@@ -10,6 +10,12 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
+        EventBus.Subscribe<GameEvents.Pause>(PauseGame);
+        EventBus.Subscribe<GameEvents.Resume>(ResumeGame);
+    }
+
+    void Start()
+    {
         gameStarter = new GameStarter(inputActions, cameraController);
         Play();
     }
@@ -39,5 +45,18 @@ public class GameController : MonoBehaviour
     public void SelectHardMode()
     {
         ChangeGameMode(GameModes.hardMode);
+    }
+    public void PauseGame(GameEvents.Pause pauseGameEvent)
+    {
+        inputActions.Disable();
+    }
+    public void ResumeGame(GameEvents.Resume resumeGameEvent)
+    {
+        inputActions.Enable();
+    }
+    void OnDestroy()
+    {
+        EventBus.Unsubscribe<GameEvents.Pause>(PauseGame);
+        EventBus.Unsubscribe<GameEvents.Resume>(ResumeGame);
     }
 }

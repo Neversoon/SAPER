@@ -1,33 +1,16 @@
-using UnityEngine;
-using UnityEngine.Events;
-
-public class GameEvents : MonoBehaviour
+public static class GameEvents
 {
-    public UnityAction lostGame;
-    public UnityAction winGame;
-    public UnityAction startGame;
-    public UnityAction restartGame;
-    public UnityAction userOpenFirstCell;
-    public UnityAction<int> userFlagCountChanged;
-
-    private static GameEvents _instance;
-    public static GameEvents Instance
+    public struct Lost { }
+    public struct Started { }
+    public struct OpenFirstCell { }
+    public struct Win { }
+    public struct Restart { }
+    public struct Pause { }
+    public struct Resume { }
+    public struct FlagCountChanged
     {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindAnyObjectByType<GameEvents>();
-
-                if (_instance == null)
-                {
-                    GameObject obj = new GameObject("GameEvents");
-                    _instance = obj.AddComponent<GameEvents>();
-                    DontDestroyOnLoad(obj);
-                }
-            }
-
-            return _instance;
-        }
+        public int NewCount;
+        public FlagCountChanged(int newCount) => NewCount = newCount;
     }
+
 }
