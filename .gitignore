@@ -60,3 +60,6 @@ Thumbs.db.meta
 # Asset bundles
 [Aa]ssets/AssetBundlesAndroid
 [Aa]ssets/AssetBundlesIOS
+
+# UTMP file
+.utmp
