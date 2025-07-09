@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PanelViewController : MonoBehaviour
+public class PanelView : MonoBehaviour
 {
     [SerializeField] Image currentImage;
     [SerializeField] Sprite imageUP;
@@ -20,6 +20,7 @@ public class PanelViewController : MonoBehaviour
 
     public IEnumerator ShowPanel()
     {
+        SFXAudioPlayer.Instance.PlaySFX(SFXAudioPlayer.Instance.audioClips.uiTap);
         float height = panel.rect.height;
 
         Vector3 startPosition = containerRoot.anchoredPosition;

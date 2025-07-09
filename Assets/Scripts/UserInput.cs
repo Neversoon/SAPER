@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class UserInput : System.IDisposable
@@ -47,6 +49,25 @@ public class UserInput : System.IDisposable
     void SaveTouchPosition(InputAction.CallbackContext ctx)
     {
         screenPosition = ctx.ReadValue<Vector2>();
+    }
+
+    public bool IsPointerOverUI(Vector2 screenPosition)
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = screenPosition;
+
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        foreach (var result in results)
+        {
+            if (result.gameObject.layer == LayerMask.NameToLayer("UI"))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void Dispose()

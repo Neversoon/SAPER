@@ -12,6 +12,7 @@ public class EmptyClosedCell : ClosedCell
             return;
         }
 
+        SFXAudioPlayer.Instance.PlaySFX(SFXAudioPlayer.Instance.audioClips.openCell);
         cellView.SetEmptyCell();
         cellStateChanger.ChangeState<EmptyCell>();
     }

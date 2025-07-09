@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
@@ -41,6 +42,11 @@ public class CameraController : MonoBehaviour
 
     public void StartDrag(InputAction.CallbackContext ctx)
     {
+        if (userInput.IsPointerOverUI(userInput.screenPosition))
+        {
+            isDragging = false;
+            return;
+        }
         dragScreenOrigin = userInput.screenPosition;
         isDragging = true;
     }

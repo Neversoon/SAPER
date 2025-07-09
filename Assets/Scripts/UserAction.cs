@@ -97,6 +97,11 @@ public class UserAction : System.IDisposable
 
     void OpenCell(UserInput userInput)
     {
+        if (userInput.IsPointerOverUI(userInput.screenPosition))
+        {
+            return;
+        }
+
         Vector2 worldPosition = mainCamera.ScreenToWorldPoint(userInput.screenPosition);
         Vector2 firstWorldPosition = mainCamera.ScreenToWorldPoint(userInput.firstTouchPosition);
 
@@ -131,6 +136,11 @@ public class UserAction : System.IDisposable
 
     void SetFlag(UserInput userInput)
     {
+        if (userInput.IsPointerOverUI(userInput.screenPosition))
+        {
+            return;
+        }
+
         Vector2 worldPosition = mainCamera.ScreenToWorldPoint(userInput.screenPosition);
         Vector2 firstWorldPosition = mainCamera.ScreenToWorldPoint(userInput.firstTouchPosition);
 
@@ -151,6 +161,7 @@ public class UserAction : System.IDisposable
         }
 
         cell.cellStateChanger.currentState.SetFlag();
+        SFXAudioPlayer.Instance.PlaySFX(SFXAudioPlayer.Instance.audioClips.flagPlaced);
 
         EventBus.Publish(new GameEvents.FlagCountChanged(boardScanner.gameData.gameRules.badCellCount - boardScanner.FlagCount()));
     }

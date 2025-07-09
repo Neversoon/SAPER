@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8196737569096957097}
   - component: {fileID: 2780420194125296169}
   - component: {fileID: 8771121803434981287}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 1289950737279095690}
   - component: {fileID: 2832740652528889641}
   - component: {fileID: 5301209134938078564}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3590307413110113488}
   - component: {fileID: 91862415416221632}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   - component: {fileID: 1376728536166159662}
   - component: {fileID: 6472148979519816238}
   - component: {fileID: 8252023005662102248}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6252480791357671317}
   - component: {fileID: 8081755729716632475}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
