@@ -56,6 +56,7 @@ public class BoardScanner
             cellView.ChangeBombCountText(bombCount);
             targetCell.cellStateChanger.currentState.SetFlag(false);
             targetCell.cellStateChanger.ChangeState<NumericCell>();
+            targetCell.cellStateChanger.currentState.cellView.SetEmptyCell();
             cellView.ChangeFlagView(false);
             return;
         }
