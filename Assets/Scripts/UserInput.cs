@@ -13,15 +13,17 @@ public class UserInput : System.IDisposable
     public InputAction setFlag { get; private set; }
     public InputAction zoom { get; private set; }
     public InputAction move { get; private set; }
+    public InputAction mobileBoardInteraction { get; private set; }
     public InputAction screenPositionAction;
 
     public UserInput(InputActionAsset inputActions)
     {
-        openCell = inputActions.FindAction("OpenCell");
+        openCell = inputActions.FindAction("OpenCellPC");
         screenPositionAction = inputActions.FindAction("ScreenPosition");
-        setFlag = inputActions.FindAction("SetFlag");
+        setFlag = inputActions.FindAction("SetFlagPC");
         zoom = inputActions.FindAction("Zoom");
         move = inputActions.FindAction("Move");
+        mobileBoardInteraction = inputActions.FindAction("MobileBoardInteraction");
 
         openCell.started += SaveFirstActionPosition;
         openCell.canceled += SaveEndActionPosition;

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class UserAction : System.IDisposable
 {
     bool userOpenFirstCell = false;
-    [SerializeField] float deadZone = 0.6f;
+    [SerializeField] float deadZone = 1.5f;
     UserInput userInput;
     BoardScanner boardScanner;
     CellSelection cellSelection;
@@ -14,12 +14,28 @@ public class UserAction : System.IDisposable
 
     System.Action<InputAction.CallbackContext> openCellHandler;
     System.Action<InputAction.CallbackContext> setFlagHandler;
+    System.Action<InputAction.CallbackContext> mobileBoardInteractionHandler;
 
     System.Action<InputAction.CallbackContext> zoom;
     private int touchCount = 0;
     private float prevMagnitude = 0;
+
+    private float pressStartTime = 0f;
+    private bool isPressed = false;
+    private const float holdThreshold = 0.5f;
+
+
     public UserAction(UserInput userInput, BoardScanner boardScanner, CellSelection cellSelection, CameraController cameraController)
     {
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            deadZone = 20f;
+        }
+        else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            deadZone = 1.5f;
+        }
+
         this.userInput = userInput;
         this.boardScanner = boardScanner;
         this.cellSelection = cellSelection;
@@ -37,6 +53,46 @@ public class UserAction : System.IDisposable
 
         userInput.move.started += cameraController.StartDrag;
         userInput.move.canceled += cameraController.StopDrag;
+
+        System.Action<InputAction.CallbackContext> mobilePressCallback = (ctx) =>
+        {
+            if (touchCount > 1)
+            {
+                return;
+            }
+            
+            if (ctx.started)
+            {
+                pressStartTime = Time.time;
+                isPressed = true;
+            }
+            else if (ctx.canceled)
+            {
+                if (!isPressed)
+                    return;
+
+                isPressed = false;
+
+                float heldTime = Time.time - pressStartTime;
+
+                if (userInput.IsPointerOverUI(userInput.screenPosition))
+                    return;
+
+                if (heldTime >= holdThreshold)
+                {
+                    Debug.Log("Long press detected");
+                    SetFlag(userInput);
+                }
+                else
+                {
+                    Debug.Log("Short press detected");
+                    OpenCell(userInput);
+                }
+            }
+        };
+
+        userInput.mobileBoardInteraction.started += mobilePressCallback;
+        userInput.mobileBoardInteraction.canceled += mobilePressCallback;
 
         /// Very big shit code
         var touch0contact = new InputAction
@@ -101,6 +157,7 @@ public class UserAction : System.IDisposable
         {
             return;
         }
+        Debug.Log($"OpenCell: {userInput.screenPosition}, {userInput.firstTouchPosition}");
 
         Vector2 worldPosition = mainCamera.ScreenToWorldPoint(userInput.screenPosition);
         Vector2 firstWorldPosition = mainCamera.ScreenToWorldPoint(userInput.firstTouchPosition);
@@ -109,7 +166,6 @@ public class UserAction : System.IDisposable
         {
             return;
         }
-
         CellObject cell = cellSelection.FindSelection(worldPosition);
 
         if (cell == null)
