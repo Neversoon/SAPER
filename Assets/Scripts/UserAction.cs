@@ -14,7 +14,7 @@ public class UserAction : System.IDisposable
 
     System.Action<InputAction.CallbackContext> openCellHandler;
     System.Action<InputAction.CallbackContext> setFlagHandler;
-    System.Action<InputAction.CallbackContext> mobileBoardInteractionHandler;
+    System.Action<InputAction.CallbackContext> mobilePressCallback;
 
     System.Action<InputAction.CallbackContext> zoom;
     private int touchCount = 0;
@@ -24,6 +24,8 @@ public class UserAction : System.IDisposable
     private bool isPressed = false;
     private const float holdThreshold = 0.5f;
 
+    private float blockInteractionTime = 0f;
+    private const float blockDurationAfterMultitouch = 0.2f;
 
     public UserAction(UserInput userInput, BoardScanner boardScanner, CellSelection cellSelection, CameraController cameraController)
     {
@@ -54,13 +56,15 @@ public class UserAction : System.IDisposable
         userInput.move.started += cameraController.StartDrag;
         userInput.move.canceled += cameraController.StopDrag;
 
-        System.Action<InputAction.CallbackContext> mobilePressCallback = (ctx) =>
+        mobilePressCallback = (ctx) =>
         {
             if (touchCount > 1)
             {
                 return;
             }
-            
+            if (Time.time < blockInteractionTime)
+                return;
+
             if (ctx.started)
             {
                 pressStartTime = Time.time;
@@ -109,7 +113,11 @@ public class UserAction : System.IDisposable
         touch1contact.Enable();
 
         touch0contact.performed += _ => touchCount++;
-        touch1contact.performed += _ => touchCount++;
+        touch1contact.performed += _ =>
+        {
+            touchCount++;
+        };
+
         touch0contact.canceled += _ =>
         {
             touchCount--;
@@ -119,6 +127,7 @@ public class UserAction : System.IDisposable
         {
             touchCount--;
             prevMagnitude = 0;
+            blockInteractionTime = Time.time + blockDurationAfterMultitouch;
         };
 
         var touch0pos = new InputAction
