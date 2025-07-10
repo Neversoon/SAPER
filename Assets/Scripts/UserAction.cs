@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,15 +18,16 @@ public class UserAction : System.IDisposable
     System.Action<InputAction.CallbackContext> mobilePressCallback;
 
     System.Action<InputAction.CallbackContext> zoom;
-    private int touchCount = 0;
-    private float prevMagnitude = 0;
+    int touchCount = 0;
+    float prevMagnitude = 0;
 
-    private float pressStartTime = 0f;
-    private bool isPressed = false;
-    private const float holdThreshold = 0.5f;
+    float pressStartTime = 0f;
+    bool isPressed = false;
+    const float holdThreshold = 0.5f;
 
-    private float blockInteractionTime = 0f;
-    private const float blockDurationAfterMultitouch = 0.2f;
+    float blockInteractionTime = 0f;
+    const float blockDurationAfterMultitouch = 0.2f;
+    bool blockInteraction = false;
 
     public UserAction(UserInput userInput, BoardScanner boardScanner, CellSelection cellSelection, CameraController cameraController)
     {
@@ -62,7 +64,8 @@ public class UserAction : System.IDisposable
             {
                 return;
             }
-            if (Time.time < blockInteractionTime)
+
+            if (Time.time < blockInteractionTime || blockInteraction)
                 return;
 
             if (ctx.started)
@@ -115,19 +118,25 @@ public class UserAction : System.IDisposable
         touch0contact.performed += _ => touchCount++;
         touch1contact.performed += _ =>
         {
+            blockInteraction = true;
             touchCount++;
         };
 
         touch0contact.canceled += _ =>
         {
+            if (blockInteraction)
+            {
+                blockInteraction = false;
+                blockInteractionTime = Time.time + blockDurationAfterMultitouch;
+            }
             touchCount--;
             prevMagnitude = 0;
         };
         touch1contact.canceled += _ =>
         {
+            blockInteractionTime = Time.time + blockDurationAfterMultitouch;
             touchCount--;
             prevMagnitude = 0;
-            blockInteractionTime = Time.time + blockDurationAfterMultitouch;
         };
 
         var touch0pos = new InputAction
