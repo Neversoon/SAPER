@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class UserAction : System.IDisposable
 {
     bool userOpenFirstCell = false;
+    bool userFirstInteraction = false;
     [SerializeField] float deadZone = 1.5f;
     UserInput userInput;
     BoardScanner boardScanner;
@@ -171,7 +172,7 @@ public class UserAction : System.IDisposable
 
     void OpenCell(UserInput userInput)
     {
-        if (userInput.IsPointerOverUI(userInput.screenPosition))
+        if (userInput.IsPointerOverUI(userInput.screenPosition) || cameraController.lastDistanceMove > 0.1f)
         {
             return;
         }
@@ -192,15 +193,25 @@ public class UserAction : System.IDisposable
         if (cell.cellStateChanger.currentState.setFlag)
             return;
 
-        cell.cellStateChanger.currentState.Tap();
-
-        boardScanner.Scan(cell);
-
         if (!userOpenFirstCell)
         {
             userOpenFirstCell = true;
-            EventBus.Publish(new GameEvents.OpenFirstCell());
+            if (cell.cellStateChanger.currentState.cellData.id == 2)
+            {
+                cell.cellStateChanger.ChangeState<EmptyClosedCell>();
+                cell.cellStateChanger.currentState.cellView.SetEmptyCell();
+            }
         }
+
+        if (!userFirstInteraction)
+        {
+            userFirstInteraction = true;
+            EventBus.Publish(new GameEvents.FirstInteraction());
+        }
+
+        cell.cellStateChanger.currentState.Tap();
+
+        boardScanner.Scan(cell);
 
         if (!boardScanner.HaveClosedEmptyCell())
         {
@@ -210,7 +221,7 @@ public class UserAction : System.IDisposable
 
     void SetFlag(UserInput userInput)
     {
-        if (userInput.IsPointerOverUI(userInput.screenPosition))
+        if (userInput.IsPointerOverUI(userInput.screenPosition) || cameraController.lastDistanceMove > 0.1f)
         {
             return;
         }
@@ -228,10 +239,10 @@ public class UserAction : System.IDisposable
         if (cell == null)
             return;
 
-        if (!userOpenFirstCell)
+        if (!userFirstInteraction)
         {
-            userOpenFirstCell = true;
-            EventBus.Publish(new GameEvents.OpenFirstCell());
+            userFirstInteraction = true;
+            EventBus.Publish(new GameEvents.FirstInteraction());
         }
 
         cell.cellStateChanger.currentState.SetFlag();

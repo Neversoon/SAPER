@@ -19,5 +19,13 @@ public class PlayTimeUI : MonoBehaviour
     {
         timeText.text = "000";
     }
+    public void ResetTimeText(GameEvents.Restart restartEvent)
+    {
+        timeText.text = "000";
+    }
+    public void ResetTimeText(GameEvents.Started startedEvent)
+    {
+        timeText.text = "000";
+    }
 }
 

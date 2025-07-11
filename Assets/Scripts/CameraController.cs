@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
@@ -16,23 +15,31 @@ public class CameraController : MonoBehaviour
 
     private bool isDragging = false;
 
+    private float boardSizeX;
+    private float boardSizeY;
+
+    private float lastAspect;
+
+    public float lastDistanceMove { get; private set; } = 10f;
+
     public void SetBounds(BoardData boardData)
     {
-        float newSize = Mathf.Min(boardData.sizeX, boardData.sizeY);
-        zoomMax = newSize * 1.5f;
-        zoomMin = newSize / 2;
+        boardSizeX = boardData.sizeX;
+        boardSizeY = boardData.sizeY;
 
-        if (Screen.orientation is ScreenOrientation.LandscapeLeft or ScreenOrientation.LandscapeRight)
-        {
-            newSize *= mainCamera.aspect;
-        }
+        zoomMin = Mathf.Min(boardSizeX, boardSizeY) / 2f;
+        zoomMax = Mathf.Max(boardSizeX, boardSizeY) * 2f;
 
-        ResizeCamera(newSize);
+        ResizeCamera();
+        lastAspect = mainCamera.aspect;
     }
 
-    private void ResizeCamera(float value)
+    private void ResizeCamera()
     {
-        mainCamera.orthographicSize = value;
+        if (mainCamera == null) return;
+
+        float targetSize = Mathf.Max(boardSizeY / 2f, (boardSizeX / mainCamera.aspect) / 2f);
+        mainCamera.orthographicSize = Mathf.Clamp(targetSize, zoomMin, zoomMax);
     }
 
     public void Zoom(float value)
@@ -42,6 +49,7 @@ public class CameraController : MonoBehaviour
 
     public void StartDrag(InputAction.CallbackContext ctx)
     {
+        lastDistanceMove = 0f;
         if (userInput.IsPointerOverUI(userInput.screenPosition))
         {
             isDragging = false;
@@ -53,7 +61,17 @@ public class CameraController : MonoBehaviour
 
     public void StopDrag(InputAction.CallbackContext ctx)
     {
+        Debug.Log($"CameraController: StopDrag, lastDistanceMove: {lastDistanceMove}");
         isDragging = false;
+    }
+
+    void Update()
+    {
+        if (Mathf.Abs(mainCamera.aspect - lastAspect) > 0.01f)
+        {
+            ResizeCamera();
+            lastAspect = mainCamera.aspect;
+        }
     }
 
     void LateUpdate()
@@ -75,9 +93,14 @@ public class CameraController : MonoBehaviour
 
         transform.position += delta;
 
+        lastDistanceMove += delta.magnitude;
+
+        float limitX = zoomMax / mainCamera.orthographicSize;
+        float limitY = zoomMax / mainCamera.orthographicSize;
+
         transform.position = new Vector3(
-            Mathf.Clamp(transform.position.x, -zoomMax / mainCamera.orthographicSize, zoomMax / mainCamera.orthographicSize),
-            Mathf.Clamp(transform.position.y, -zoomMax / mainCamera.orthographicSize, zoomMax / mainCamera.orthographicSize),
+            Mathf.Clamp(transform.position.x, -limitX, limitX),
+            Mathf.Clamp(transform.position.y, -limitY, limitY),
             transform.position.z
         );
 

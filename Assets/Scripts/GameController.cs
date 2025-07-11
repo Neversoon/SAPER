@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour
     {
         EventBus.Subscribe<GameEvents.Pause>(PauseGame);
         EventBus.Subscribe<GameEvents.Resume>(ResumeGame);
+        EventBus.Subscribe<GameEvents.Lost>(StopGame);
+        EventBus.Subscribe<GameEvents.Win>(StopGame);
     }
 
     void Start()
@@ -54,9 +56,19 @@ public class GameController : MonoBehaviour
     {
         inputActions.Enable();
     }
+    public void StopGame(GameEvents.Lost lostEvent)
+    {
+        inputActions.Disable();
+    }
+    public void StopGame(GameEvents.Win winEvent)
+    {
+        inputActions.Disable();
+    }
     void OnDestroy()
     {
         EventBus.Unsubscribe<GameEvents.Pause>(PauseGame);
         EventBus.Unsubscribe<GameEvents.Resume>(ResumeGame);
+        EventBus.Unsubscribe<GameEvents.Lost>(StopGame);
+        EventBus.Unsubscribe<GameEvents.Win>(StopGame);
     }
 }
