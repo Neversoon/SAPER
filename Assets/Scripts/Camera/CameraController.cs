@@ -61,7 +61,6 @@ public class CameraController : MonoBehaviour
 
     public void StopDrag(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"CameraController: StopDrag, lastDistanceMove: {lastDistanceMove}");
         isDragging = false;
     }
 

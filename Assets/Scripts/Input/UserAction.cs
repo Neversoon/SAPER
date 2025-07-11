@@ -176,7 +176,6 @@ public class UserAction : System.IDisposable
         {
             return;
         }
-        Debug.Log($"OpenCell: {userInput.screenPosition}, {userInput.firstTouchPosition}");
 
         Vector2 worldPosition = mainCamera.ScreenToWorldPoint(userInput.screenPosition);
         Vector2 firstWorldPosition = mainCamera.ScreenToWorldPoint(userInput.firstTouchPosition);
