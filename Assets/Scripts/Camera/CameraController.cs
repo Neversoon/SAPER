@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
         boardSizeY = boardData.sizeY;
 
         zoomMin = Mathf.Min(boardSizeX, boardSizeY) / 2f;
-        zoomMax = Mathf.Max(boardSizeX, boardSizeY) * 2f;
+        zoomMax = Mathf.Max(boardSizeX, boardSizeY) * 2.5f;
 
         ResizeCamera();
         lastAspect = mainCamera.aspect;

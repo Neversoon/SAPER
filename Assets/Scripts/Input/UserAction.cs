@@ -50,7 +50,7 @@ public class UserAction : System.IDisposable
 
         openCellHandler = (ctx) => OpenCell(userInput);
         setFlagHandler = (ctx) => SetFlag(userInput);
-        zoom = (ctx) => Zoom(ctx.ReadValue<Vector2>().y * 100f);
+        zoom = (ctx) => Zoom(ctx.ReadValue<Vector2>().y * 10f);
 
         userInput.openCell.canceled += openCellHandler;
         userInput.setFlag.canceled += setFlagHandler;
