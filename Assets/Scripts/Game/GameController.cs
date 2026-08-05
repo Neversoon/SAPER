@@ -51,23 +51,23 @@ public class GameController : MonoBehaviour
     }
     public void PauseGame(GameEvents.Pause pauseGameEvent)
     {
-        inputActions.Disable();
+        inputActions?.Disable();
     }
     public void ResumeGame(GameEvents.Resume resumeGameEvent)
     {
-        inputActions.Enable();
+        inputActions?.Enable();
     }
     public void ResumeGame(GameEvents.Started startedEvent)
     {
-        inputActions.Enable();
+        inputActions?.Enable();
     }
     public void StopGame(GameEvents.Lost lostEvent)
     {
-        inputActions.Disable();
+        inputActions?.Disable();
     }
     public void StopGame(GameEvents.Win winEvent)
     {
-        inputActions.Disable();
+        inputActions?.Disable();
     }
     void OnDestroy()
     {

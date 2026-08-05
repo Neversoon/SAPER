@@ -39,7 +39,7 @@ public class GameStarter
             userAction.Dispose();
         }
 
-        boardController.Clear();
+        boardController?.Clear();
 
         StartGame(gameData);
     }

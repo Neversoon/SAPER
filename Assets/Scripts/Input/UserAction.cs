@@ -13,11 +13,20 @@ public class UserAction : System.IDisposable
     CameraController cameraController;
 
     Camera mainCamera;
-
+ 
     System.Action<InputAction.CallbackContext> openCellHandler;
     System.Action<InputAction.CallbackContext> setFlagHandler;
     System.Action<InputAction.CallbackContext> mobilePressCallback;
-
+    InputAction touch0contact;
+    InputAction touch1contact;
+    InputAction touch0pos;
+    InputAction touch1pos;
+    System.Action<InputAction.CallbackContext> touch0ContactPerformed;
+    System.Action<InputAction.CallbackContext> touch1ContactPerformed;
+    System.Action<InputAction.CallbackContext> touch0ContactCanceled;
+    System.Action<InputAction.CallbackContext> touch1ContactCanceled;
+    System.Action<InputAction.CallbackContext> touch1PositionPerformed;
+ 
     System.Action<InputAction.CallbackContext> zoom;
     int touchCount = 0;
     float prevMagnitude = 0;
@@ -52,12 +61,18 @@ public class UserAction : System.IDisposable
         setFlagHandler = (ctx) => SetFlag(userInput);
         zoom = (ctx) => Zoom(ctx.ReadValue<Vector2>().y * 10f);
 
-        userInput.openCell.canceled += openCellHandler;
-        userInput.setFlag.canceled += setFlagHandler;
-        userInput.zoom.performed += zoom;
+        if (userInput.openCell != null)
+            userInput.openCell.canceled += openCellHandler;
+        if (userInput.setFlag != null)
+            userInput.setFlag.canceled += setFlagHandler;
+        if (userInput.zoom != null)
+            userInput.zoom.performed += zoom;
 
-        userInput.move.started += cameraController.StartDrag;
-        userInput.move.canceled += cameraController.StopDrag;
+        if (userInput.move != null)
+        {
+            userInput.move.started += cameraController.StartDrag;
+            userInput.move.canceled += cameraController.StopDrag;
+        }
 
         mobilePressCallback = (ctx) =>
         {
@@ -99,31 +114,34 @@ public class UserAction : System.IDisposable
             }
         };
 
-        userInput.mobileBoardInteraction.started += mobilePressCallback;
-        userInput.mobileBoardInteraction.canceled += mobilePressCallback;
+        if (userInput.mobileBoardInteraction != null)
+        {
+            userInput.mobileBoardInteraction.started += mobilePressCallback;
+            userInput.mobileBoardInteraction.canceled += mobilePressCallback;
+        }
 
         /// Very big shit code
-        var touch0contact = new InputAction
+        touch0contact = new InputAction
         (
             type: InputActionType.Button,
             binding: "<Touchscreen>/touch0/press"
         );
         touch0contact.Enable();
-        var touch1contact = new InputAction
+        touch1contact = new InputAction
         (
             type: InputActionType.Button,
             binding: "<Touchscreen>/touch1/press"
         );
         touch1contact.Enable();
 
-        touch0contact.performed += _ => touchCount++;
-        touch1contact.performed += _ =>
+        touch0ContactPerformed = _ => touchCount++;
+        touch1ContactPerformed = _ =>
         {
             blockInteraction = true;
             touchCount++;
         };
 
-        touch0contact.canceled += _ =>
+        touch0ContactCanceled = _ =>
         {
             if (blockInteraction)
             {
@@ -133,26 +151,32 @@ public class UserAction : System.IDisposable
             touchCount--;
             prevMagnitude = 0;
         };
-        touch1contact.canceled += _ =>
+        touch1ContactCanceled = _ =>
         {
             blockInteractionTime = Time.time + blockDurationAfterMultitouch;
             touchCount--;
             prevMagnitude = 0;
         };
 
-        var touch0pos = new InputAction
+        touch0contact.performed += touch0ContactPerformed;
+        touch1contact.performed += touch1ContactPerformed;
+        touch0contact.canceled += touch0ContactCanceled;
+        touch1contact.canceled += touch1ContactCanceled;
+
+        touch0pos = new InputAction
         (
             type: InputActionType.Value,
             binding: "<Touchscreen>/touch0/position"
         );
         touch0pos.Enable();
-        var touch1pos = new InputAction
+        touch1pos = new InputAction
         (
             type: InputActionType.Value,
             binding: "<Touchscreen>/touch1/position"
         );
         touch1pos.Enable();
-        touch1pos.performed += _ =>
+
+        touch1PositionPerformed = _ =>
         {
             if (touchCount < 2)
                 return;
@@ -163,6 +187,8 @@ public class UserAction : System.IDisposable
             prevMagnitude = magnitude;
             Zoom(-difference);
         };
+
+        touch1pos.performed += touch1PositionPerformed;
     }
 
     public void Zoom(float value)
@@ -252,13 +278,57 @@ public class UserAction : System.IDisposable
 
     public void Dispose()
     {
-        if (userInput != null)
-        {
+        if (userInput == null)
+            return;
+
+        if (userInput.openCell != null)
             userInput.openCell.canceled -= openCellHandler;
+
+        if (userInput.setFlag != null)
             userInput.setFlag.canceled -= setFlagHandler;
+
+        if (userInput.zoom != null)
             userInput.zoom.performed -= zoom;
+
+        if (userInput.move != null)
+        {
             userInput.move.started -= cameraController.StartDrag;
             userInput.move.canceled -= cameraController.StopDrag;
+        }
+
+        if (userInput.mobileBoardInteraction != null)
+        {
+            userInput.mobileBoardInteraction.started -= mobilePressCallback;
+            userInput.mobileBoardInteraction.canceled -= mobilePressCallback;
+        }
+
+        if (touch0contact != null)
+        {
+            touch0contact.performed -= touch0ContactPerformed;
+            touch0contact.canceled -= touch0ContactCanceled;
+            touch0contact.Disable();
+            touch0contact.Dispose();
+        }
+
+        if (touch1contact != null)
+        {
+            touch1contact.performed -= touch1ContactPerformed;
+            touch1contact.canceled -= touch1ContactCanceled;
+            touch1contact.Disable();
+            touch1contact.Dispose();
+        }
+
+        if (touch0pos != null)
+        {
+            touch0pos.Disable();
+            touch0pos.Dispose();
+        }
+
+        if (touch1pos != null)
+        {
+            touch1pos.performed -= touch1PositionPerformed;
+            touch1pos.Disable();
+            touch1pos.Dispose();
         }
     }
 }

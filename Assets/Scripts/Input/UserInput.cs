@@ -14,10 +14,16 @@ public class UserInput : System.IDisposable
     public InputAction zoom { get; private set; }
     public InputAction move { get; private set; }
     public InputAction mobileBoardInteraction { get; private set; }
-    public InputAction screenPositionAction;
+    public InputAction screenPositionAction { get; private set; }
 
     public UserInput(InputActionAsset inputActions)
     {
+        if (inputActions == null)
+        {
+            Debug.LogError("InputActionAsset is not assigned in UserInput.");
+            return;
+        }
+
         openCell = inputActions.FindAction("OpenCellPC");
         screenPositionAction = inputActions.FindAction("ScreenPosition");
         setFlag = inputActions.FindAction("SetFlagPC");
@@ -25,17 +31,29 @@ public class UserInput : System.IDisposable
         move = inputActions.FindAction("Move");
         mobileBoardInteraction = inputActions.FindAction("MobileBoardInteraction");
 
-        openCell.started += SaveFirstActionPosition;
-        openCell.canceled += SaveEndActionPosition;
-        setFlag.started += SaveFirstActionPosition;
-        setFlag.canceled += SaveEndActionPosition;
-        screenPositionAction.performed += SaveTouchPosition;
+        if (openCell != null)
+        {
+            openCell.started += SaveFirstActionPosition;
+            openCell.canceled += SaveEndActionPosition;
+            openCell.Enable();
+        }
 
-        screenPositionAction.Enable();
-        openCell.Enable();
-        setFlag.Enable();
-        zoom.Enable();
-        move.Enable();
+        if (setFlag != null)
+        {
+            setFlag.started += SaveFirstActionPosition;
+            setFlag.canceled += SaveEndActionPosition;
+            setFlag.Enable();
+        }
+
+        if (screenPositionAction != null)
+        {
+            screenPositionAction.performed += SaveTouchPosition;
+            screenPositionAction.Enable();
+        }
+
+        zoom?.Enable();
+        move?.Enable();
+        mobileBoardInteraction?.Enable();
     }
 
     void SaveFirstActionPosition(InputAction.CallbackContext ctx)
@@ -55,8 +73,13 @@ public class UserInput : System.IDisposable
 
     public bool IsPointerOverUI(Vector2 screenPosition)
     {
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = screenPosition;
+        if (EventSystem.current == null)
+            return false;
+
+        PointerEventData eventData = new PointerEventData(EventSystem.current)
+        {
+            position = screenPosition
+        };
 
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
@@ -74,10 +97,32 @@ public class UserInput : System.IDisposable
 
     public void Dispose()
     {
-        openCell.started -= SaveFirstActionPosition;
-        openCell.canceled -= SaveEndActionPosition;
-        setFlag.started -= SaveFirstActionPosition;
-        setFlag.canceled -= SaveEndActionPosition;
-        screenPositionAction.performed -= SaveTouchPosition;
+        if (openCell != null)
+        {
+            openCell.started -= SaveFirstActionPosition;
+            openCell.canceled -= SaveEndActionPosition;
+            openCell.Disable();
+        }
+
+        if (setFlag != null)
+        {
+            setFlag.started -= SaveFirstActionPosition;
+            setFlag.canceled -= SaveEndActionPosition;
+            setFlag.Disable();
+        }
+
+        if (screenPositionAction != null)
+        {
+            screenPositionAction.performed -= SaveTouchPosition;
+            screenPositionAction.Disable();
+        }
+
+        zoom?.Disable();
+        move?.Disable();
+
+        if (mobileBoardInteraction != null)
+        {
+            mobileBoardInteraction.Disable();
+        }
     }
 }

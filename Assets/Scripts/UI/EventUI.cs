@@ -36,4 +36,11 @@ public class EventUI : MonoBehaviour
     {
         eventUIContainer.SetActive(false);
     }
+
+    void OnDestroy()
+    {
+        EventBus.Unsubscribe<GameEvents.Win>(ShowWinUI);
+        EventBus.Unsubscribe<GameEvents.Started>(HideUI);
+        EventBus.Unsubscribe<GameEvents.Lost>(ShowLoseUI);
+    }
 }

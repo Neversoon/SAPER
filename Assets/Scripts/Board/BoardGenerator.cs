@@ -38,12 +38,17 @@ public class BoardGenerator
             }
         }
 
-        for (int i = 0; i < gameRules.badCellCount; i++)
+        int minesToPlace = Mathf.Clamp(gameRules.badCellCount, 0, boardData.sizeX * boardData.sizeY - 1);
+        if (minesToPlace != gameRules.badCellCount)
+        {
+            Debug.LogWarning($"badCellCount {gameRules.badCellCount} was clamped to {minesToPlace} based on board dimensions.");
+        }
+
+        for (int i = 0; i < minesToPlace; i++)
         {
             int index = Random.Range(0, availablePoints.Count);
             Vector2Int point = availablePoints[index];
             availablePoints.RemoveAt(index);
-
 
             Vector2 createPosition = new Vector2(point.x - offsetX, point.y - offsetY);
             CellObject cell = bombFactory.Create(createPosition, container, new Vector2Int(point.y, point.x));
